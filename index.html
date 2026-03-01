@@ -2,222 +2,266 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miro_lab - Atelier Profesional</title>
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Miro_lab">
-    <meta name="apple-mobile-web-app-title" content="Miro_lab">
-    <meta name="theme-color" content="#d4af37">
-    <meta name="msapplication-navbutton-color" content="#d4af37">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Miro_lab%22,%22short_name%22:%22Miro_lab%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22#ffffff%22,%22theme_color%22:%22#d4af37%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3022/3022567.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Miro_lab | v6.6 Final</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f9f9f9; --save: #28a745; --info: #2196F3; }
-        body { font-family: 'Georgia', serif; background-color: #f2f2f2; padding: 15px; margin: 0; }
-        .container { max-width: 900px; margin: auto; background: var(--bg); padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-height: 90vh; }
-        h1 { font-family: sans-serif; letter-spacing: 3px; color: var(--dark); text-align: center; text-transform: uppercase; margin: 0; }
-        .subtitle { text-align: center; font-size: 0.8em; letter-spacing: 4px; color: var(--gold); margin-bottom: 25px; font-weight: bold; }
-        .card { padding: 15px; border-radius: 12px; background: var(--soft); border: 1px solid #eee; margin-bottom: 15px; }
-        .multi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 220px; overflow-y: auto; }
-        .nota-col h4 { margin: 0 0 10px 0; font-size: 0.7em; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; padding-bottom: 5px; text-align: center;}
-        .check-item { display: flex; align-items: center; font-size: 0.8em; margin-bottom: 6px; cursor: pointer; padding: 4px; border-radius: 4px; }
-        .check-item input { width: auto; margin-right: 8px; margin-top: 0; }
-        select, input, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
-        button { background: var(--dark); color: white; border: none; cursor: pointer; font-weight: bold; }
-        .formula-box { background: white; border: 2px solid var(--gold); padding: 15px; border-radius: 10px; margin-top: 15px; }
-        .desc-box { background: #fff9f0; border-left: 4px solid #e67e22; padding: 12px; margin: 12px 0; font-style: italic; color: #5d4037; font-size: 0.9em; }
-        .saved-item { background: white; border-left: 4px solid var(--gold); padding: 15px; margin-bottom: 12px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .details { font-size: 0.8em; color: #555; margin-top: 8px; line-height: 1.4; background: #fefefe; padding: 8px; border: 1px solid #f0f0f0; }
-        #panelAdmin, #panelGuardados, #panelCostos { display: none; margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 10px; }
-        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
-        .cost-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        @media (max-width: 600px) { .multi-grid { grid-template-columns: 1fr; } .nota-col { height: 150px; } }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--dark); }
+        #lockscreen { position: fixed; inset: 0; background: var(--dark); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; width: 300px; text-align: center; }
+        .container { max-width: 850px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-bottom: 20px; }
+        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; border: 1px solid #e0e0e0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .oil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .note-column { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px; height: 300px; overflow-y: auto; }
+        .note-column h4 { margin: 0 0 10px 0; color: var(--gold); text-align: center; border-bottom: 1px solid #eee; text-transform: uppercase; font-size: 0.8rem; }
+        .oil-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor: pointer; }
+        .oil-item input { margin-right: 10px; width: 18px; height: 18px; }
+        label { font-size: 11px; text-transform: uppercase; color: #666; font-weight: bold; display: block; margin-top: 10px; }
+        select, input, textarea, button { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
+        button { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-gold { background: var(--gold); }
+        .result-box { background: #fffdf0; border: 2px solid var(--gold); padding: 20px; border-radius: 10px; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
+        th { background: #eee; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .action-btns { display: flex; gap: 5px; }
+        .btn-sm-edit { background: #28a745; width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .btn-sm-del { background: #dc3545; width: 35px; height: 30px; display: flex; align-items: center; justify-content: center; margin: 0; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Miro_lab</h1>
-    <div class="subtitle">ATELIER PROFESIONAL</div>
-    
-    <div class="card">
-        <div style="display: flex; gap: 8px;">
-            <div style="flex: 1;"><label><small>Frasco (ml)</small></label><input type="number" id="volTotal" value="30"></div>
-            <div style="flex: 1;"><label><small>Intensidad %</small></label><input type="number" id="tipoConc" value="18"></div>
-            <div style="flex: 1;"><label><small>Costo Frasco $</small></label><input type="number" id="costoFrascoBase" value="0"></div>
-        </div>
-        
-        <div class="multi-grid">
-            <div class="nota-col"><h4>🌸 Salida</h4><div id="listaCabeza"></div></div>
-            <div class="nota-col"><h4>🌿 Corazón</h4><div id="listaCorazon"></div></div>
-            <div class="nota-col"><h4>🪵 Fondo</h4><div id="listaFondo"></div></div>
-        </div>
-        
-        <button onclick="generar()">CALCULAR MEZCLA Y PERFIL</button>
-        
-        <div id="resultado" style="display:none;" class="formula-box">
-            <div id="recetaTxt"></div>
-            <div id="perfilOlfativo" class="desc-box"></div>
-            <div id="costoDetalle" style="margin-top:10px; padding:10px; background:#f0f7ff; border:1px dashed #2196F3; font-size:0.9em;"></div>
-            <input type="text" id="nomFor" placeholder="Nombre de este perfume...">
-            <button onclick="guardarF()" style="background:var(--save); margin-top:10px;">💾 GUARDAR EN MI LIBRO</button>
-        </div>
+<div id="lockscreen">
+    <div class="login-box">
+        <h2>MIRO_LAB</h2>
+        <input type="password" id="passInput" placeholder="CONTRASEÑA" onkeydown="if(event.key==='Enter') checkAccess()">
+        <button onclick="checkAccess()" class="btn-gold">ENTRAR</button>
     </div>
+</div>
 
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button onclick="toggleSec('panelGuardados')" style="background:#eee; color:#333; flex:1; min-width:100px;">📖 LIBRO</button>
-        <button onclick="toggleSec('panelAdmin')" style="background:#eee; color:#333; flex:1; min-width:100px;">⚙️ ACEITES</button>
-        <button onclick="toggleSec('panelCostos')" style="background:#eee; color:#333; flex:1; min-width:100px;">💰 COSTOS</button>
-    </div>
+<div id="labApp" style="display:none;">
+    <div class="container">
+        <header><h1>MIRO_LAB</h1><small>LABORATORIO PROFESIONAL</small></header>
 
-    <div id="panelCostos">
-        <h3>💰 Precios Base</h3>
-        <label>Alcohol (Precio por Litro $)</label>
-        <input type="number" id="precioAlcoholLitro" value="1000" onchange="guardarPreciosBase()">
-    </div>
-
-    <div id="panelGuardados"><h3>📖 Libro de Fórmulas</h3><div id="listaF"></div></div>
-
-    <div id="panelAdmin">
-        <h3>⚙️ Inventario</h3>
-        <div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; margin-bottom:15px; border-radius:8px;">
-            <input type="hidden" id="editIdx" value="-1">
-            <input type="text" id="editNom" placeholder="Nombre Aceite...">
-            <select id="editNota"><option value="Cabeza">Salida</option><option value="Corazon">Corazón</option><option value="Fondo">Fondo</option></select>
-            <select id="editFamilia">
-                <option value="Cítrico">🍋 Cítrico</option><option value="Floral">🌸 Floral</option><option value="Amaderado">🪵 Amaderado</option>
-                <option value="Especiado">🌶️ Especiado</option><option value="Herbal">🌿 Herbal</option><option value="Dulce/Oriental">🍯 Dulce/Oriental</option>
-            </select>
-            <div style="display:flex; gap:5px;">
-                <input type="number" id="editPrecio" placeholder="Precio $">
-                <input type="number" id="editML" placeholder="ml frasco">
+        <div class="card">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                <div><label>Frasco (ml)</label><input type="number" id="volTotal" value="30"></div>
+                <div><label>Concentración %</label>
+                    <select id="intensity">
+                        <option value="18">EdP (18%)</option>
+                        <option value="12">EdT (12%)</option>
+                        <option value="25">Extracto (25%)</option>
+                    </select>
+                </div>
+                <div><label>Alc. $/Litro</label><input type="number" id="priceAlcohol" value="1500"></div>
             </div>
-            <button onclick="addAceite()" style="margin-top:10px; background:var(--info);">GUARDAR ACEITE</button>
+
+            <div class="oil-grid">
+                <div class="note-column"><h4>Salida</h4><div id="listTop"></div></div>
+                <div class="note-column"><h4>Corazón</h4><div id="listHeart"></div></div>
+                <div class="note-column"><h4>Fondo</h4><div id="listBase"></div></div>
+            </div>
+            <button onclick="calculate()" class="btn-gold">Generar Fórmula</button>
         </div>
-        <table id="tabAdm"><thead><tr><th>Aceite</th><th>Nota</th><th>Costo</th><th>Acción</th></tr></thead><tbody></tbody></table>
+
+        <div id="resultBox" class="result-box" style="display:none;">
+            <div id="formulaOutput"></div>
+            <label>Descripción / Notas</label>
+            <textarea id="formDesc" rows="3"></textarea>
+            <input type="text" id="formName" placeholder="Nombre de la fragancia" style="margin-top:10px;">
+            <button onclick="saveToCloud()" style="background:#28a745;">💾 Guardar</button>
+        </div>
+
+        <div style="display:flex; gap:10px; margin: 20px 0;">
+            <button onclick="showPanel('panelLibrary')" style="background:#ddd; color:#333;">📖 Libro</button>
+            <button onclick="showPanel('panelInventory')" style="background:#ddd; color:#333;">⚙️ Inventario</button>
+        </div>
+
+        <div id="panelLibrary" class="card" style="display:none;"><div id="libraryCont"></div></div>
+
+        <div id="panelInventory" class="card" style="display:none;">
+            <h3 id="invTitle">Gestión de Aceites</h3>
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 8px;">
+                <input type="hidden" id="editId">
+                <label>Nombre</label><input type="text" id="newOilName">
+                <label>Nota</label>
+                <select id="newOilNote">
+                    <option value="Top">Salida</option>
+                    <option value="Heart">Corazón</option>
+                    <option value="Base">Fondo</option>
+                </select>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <div style="flex:1;"><label>Precio ($)</label><input type="number" id="newOilPrice"></div>
+                    <div style="flex:1;"><label>ML</label><input type="number" id="newOilML"></div>
+                </div>
+                <button onclick="addOil()" id="btnAdd" class="btn-gold">Guardar Aceite</button>
+                <button onclick="cancelEdit()" id="btnCancel" style="background:#666; display:none;">Cancelar</button>
+            </div>
+            <table>
+                <thead><tr><th>Nombre</th><th>$ / ML</th><th>Acciones</th></tr></thead>
+                <tbody id="inventoryBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    const inicial = [
-        {n: "Limón", nota: "Cabeza", p: 500, ml: 10, f: "Cítrico"},
-        {n: "Rosa", nota: "Corazon", p: 2000, ml: 5, f: "Floral"},
-        {n: "Sándalo", nota: "Fondo", p: 2500, ml: 5, f: "Amaderado"}
-    ];
-    
-    let db = JSON.parse(localStorage.getItem('mirolab_db')) || inicial;
-    let recs = JSON.parse(localStorage.getItem('mirolab_recs')) || [];
-    let preciosBase = JSON.parse(localStorage.getItem('mirolab_precios')) || { alcohol: 1000 };
-    let tempRec = null;
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp2Pb74Gyhmd5SCN8FjN_jgIdozz89R8s",
+      authDomain: "miro-lab-42dfa.firebaseapp.com",
+      databaseURL: "https://miro-lab-42dfa-default-rtdb.firebaseio.com",
+      projectId: "miro-lab-42dfa",
+      appId: "1:1093426796808:web:bb325f92d1a63e989e74bd"
+    };
 
-    function guardarPreciosBase() {
-        preciosBase.alcohol = document.getElementById("precioAlcoholLitro").value;
-        localStorage.setItem('mirolab_precios', JSON.stringify(preciosBase));
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function checkAccess() {
+        if(document.getElementById('passInput').value.toLowerCase() === 'miro2026') {
+            document.getElementById('lockscreen').style.display = 'none';
+            document.getElementById('labApp').style.display = 'block';
+            syncData();
+        }
     }
 
-    function poblar() {
-        ["Cabeza", "Corazon", "Fondo"].forEach(tipo => {
-            const div = document.getElementById("lista" + tipo); div.innerHTML = "";
-            db.filter(e => e.nota === tipo).sort((a,b)=>a.n.localeCompare(b.n)).forEach(e => {
-                div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${tipo}" value="${e.n}"> ${e.n}</label>`;
+    let oils = [];
+    function syncData() {
+        database.ref('oils').on('value', (snapshot) => {
+            const data = snapshot.val();
+            oils = data ? Object.values(data).sort((a, b) => a.name.localeCompare(b.name)) : [];
+            updateOilUI();
+        });
+        database.ref('formulas').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const formulas = data ? Object.values(data).reverse() : [];
+            const container = document.getElementById('libraryCont');
+            container.innerHTML = "<h3>Historial</h3>";
+            formulas.forEach(f => {
+                container.innerHTML += `<div style="border-bottom:1px solid #eee; padding:15px 0;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <b>${f.name}</b>
+                        <button onclick="deleteFormula('${f.id}')" style="width:auto; padding:2px 8px; background:red;">✕</button>
+                    </div>
+                    <p style="font-size:12px; margin:5px 0;">${f.desc || ''}</p>
+                    <small>${f.date} | $${f.costoTotal}</small>
+                </div>`;
             });
         });
-        document.getElementById("precioAlcoholLitro").value = preciosBase.alcohol;
     }
 
-    function generar() {
-        const v = parseFloat(document.getElementById("volTotal").value);
-        const c = parseFloat(document.getElementById("tipoConc").value);
-        const cFrasco = parseFloat(document.getElementById("costoFrascoBase").value) || 0;
-        const selC = Array.from(document.querySelectorAll('input[name="chkCabeza"]:checked')).map(el => el.value);
-        const selCo = Array.from(document.querySelectorAll('input[name="chkCorazon"]:checked')).map(el => el.value);
-        const selF = Array.from(document.querySelectorAll('input[name="chkFondo"]:checked')).map(el => el.value);
+    function updateOilUI() {
+        const categories = { Top: 'listTop', Heart: 'listHeart', Base: 'listBase' };
+        Object.keys(categories).forEach(cat => {
+            const div = document.getElementById(categories[cat]);
+            div.innerHTML = "";
+            oils.filter(o => o.note === cat).forEach(o => {
+                div.innerHTML += `<label class="oil-item"><input type="checkbox" name="oilSelect" value="${o.id}"><span>${o.name}</span></label>`;
+            });
+        });
+        const tbody = document.getElementById('inventoryBody');
+        tbody.innerHTML = "";
+        oils.forEach(o => {
+            tbody.innerHTML += `<tr>
+                <td>${o.name} <br><small style="color:#999">${o.note}</small></td>
+                <td>$${o.price} / ${o.ml}ml</td>
+                <td>
+                    <div class="action-btns">
+                        <button onclick="editOil('${o.id}')" class="btn-sm-edit">✎</button>
+                        <button onclick="deleteOil('${o.id}')" class="btn-sm-del">✕</button>
+                    </div>
+                </td>
+            </tr>`;
+        });
+    }
 
-        if(!selC.length || !selCo.length || !selF.length) return alert("Selecciona aceites en las 3 columnas.");
+    function addOil() {
+        const id = document.getElementById('editId').value || Date.now().toString();
+        const name = document.getElementById('newOilName').value.trim();
+        const note = document.getElementById('newOilNote').value;
+        const price = document.getElementById('newOilPrice').value || 0;
+        const ml = document.getElementById('newOilML').value || 10;
+        if(!name) return;
+        database.ref('oils/' + id).set({ id, name, note, price, ml }).then(() => cancelEdit());
+    }
+
+    function editOil(id) {
+        const o = oils.find(item => item.id === id);
+        document.getElementById('editId').value = o.id;
+        document.getElementById('newOilName').value = o.name;
+        document.getElementById('newOilNote').value = o.note;
+        document.getElementById('newOilPrice').value = o.price;
+        document.getElementById('newOilML').value = o.ml;
+        document.getElementById('btnCancel').style.display = "block";
+        document.getElementById('invTitle').innerText = "Editando Aceite";
+        window.scrollTo(0, 0);
+    }
+
+    function cancelEdit() {
+        document.getElementById('editId').value = "";
+        document.getElementById('newOilName').value = "";
+        document.getElementById('newOilPrice').value = "";
+        document.getElementById('newOilML').value = "";
+        document.getElementById('invTitle').innerText = "Gestión de Aceites";
+        document.getElementById('btnCancel').style.display = "none";
+    }
+
+    function deleteOil(id) { if(confirm("¿Eliminar este aceite del inventario?")) database.ref('oils/' + id).remove(); }
+    function deleteFormula(id) { if(confirm("¿Eliminar fórmula?")) database.ref('formulas/' + id).remove(); }
+
+    function calculate() {
+        const vol = parseFloat(document.getElementById('volTotal').value);
+        const conc = parseFloat(document.getElementById('intensity').value);
+        const pAlcohol = parseFloat(document.getElementById('priceAlcohol').value);
+        const selected = Array.from(document.querySelectorAll('input[name="oilSelect"]:checked'));
+
+        if(selected.length < 1) return alert("Selecciona aceites");
+
+        const mlEsencia = vol * (conc / 100);
+        const mlAlcohol = vol - mlEsencia;
+        const totalDrops = Math.round(mlEsencia * 25);
+        const dropsPerOil = (totalDrops / selected.length).toFixed(1);
         
-        const gtsTotal = Math.round(v * (c/100) * 25);
-        const mlAlc = v - (gtsTotal / 25);
-        const costoAlc = mlAlc * (preciosBase.alcohol / 1000);
-        let costoEsenciasTotal = 0;
-        let familiasContador = {};
+        const costoAlcohol = (pAlcohol / 1000) * mlAlcohol;
+        let costoAceites = 0;
+        let desglose = "";
 
-        const procesar = (lista, gtsSector) => {
-            const gtsPorAceite = gtsSector / lista.length;
-            return lista.map(nombre => {
-                const info = db.find(a => a.n === nombre);
-                familiasContador[info.f] = (familiasContador[info.f] || 0) + 1;
-                costoEsenciasTotal += (gtsPorAceite / 25) * (info.p / info.ml);
-                return { nombre, gotas: Math.round(gtsPorAceite) };
-            });
-        };
-
-        const resC = procesar(selC, gtsTotal * 0.2);
-        const resCo = procesar(selCo, gtsTotal * 0.35);
-        const resF = procesar(selF, gtsTotal * 0.45);
-
-        const fMasUsada = Object.keys(familiasContador).reduce((a, b) => familiasContador[a] > familiasContador[b] ? a : b);
-        let desc = `Fragancia de carácter ${fMasUsada.toLowerCase()}, con una salida de ${selC.join(' y ')}, un corazón de ${selCo.join(' y ')} y un fondo persistente de ${selF.join(' y ')}.`;
-
-        const totalFinal = costoAlc + costoEsenciasTotal + cFrasco;
-        tempRec = { v, c, alc: mlAlc.toFixed(1), gtsTotal, resC, resCo, resF, totalFinal, desc };
-
-        document.getElementById("recetaTxt").innerHTML = `<h4>${v}ml - ${gtsTotal} gotas</h4><p>🟢 <b>Salida:</b> ${resC.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p><p>🟡 <b>Corazón:</b> ${resCo.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p><p>🔴 <b>Fondo:</b> ${resF.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p>`;
-        document.getElementById("perfilOlfativo").innerHTML = `<b>✨ Perfil:</b><br>"${desc}"`;
-        document.getElementById("costoDetalle").innerHTML = `<b>Costo: $${totalFinal.toFixed(2)}</b>`;
-        document.getElementById("resultado").style.display = "block";
-    }
-
-    function guardarF() {
-        const nom = document.getElementById("nomFor").value.trim() || "Perfume sin nombre";
-        recs.unshift({...tempRec, nombre: nom, fecha: new Date().toLocaleDateString()});
-        localStorage.setItem('mirolab_recs', JSON.stringify(recs));
-        actualizarRecs(); alert("¡Guardado!");
-    }
-
-    function actualizarRecs() {
-        const cont = document.getElementById("listaF"); cont.innerHTML = recs.length === 0 ? "<p><small>Libro vacío.</small></p>" : "";
-        recs.forEach((r, i) => {
-            cont.innerHTML += `<div class="saved-item"><div><b>${r.nombre}</b> <span class="cost-badge">$${r.totalFinal.toFixed(2)}</span><div class="details"><i>${r.desc}</i><br><br>${r.v}ml (${r.c}%) • ${r.fecha}</div><button onclick="borrarR(${i})" style="background:red; font-size:10px; width:auto; padding:5px; margin-top:5px;">✕ BORRAR</button></div></div>`;
+        selected.forEach(el => {
+            const o = oils.find(item => item.id === el.value);
+            const costoPorGota = (parseFloat(o.price)||0) / ((parseFloat(o.ml)||1) * 25);
+            costoAceites += costoPorGota * parseFloat(dropsPerOil);
+            desglose += `<li><b>${o.name}:</b> ${dropsPerOil} gotas</li>`;
         });
+
+        const costoTotal = costoAceites + costoAlcohol;
+
+        document.getElementById('formulaOutput').innerHTML = `
+            <h3>Costo Total: $${costoTotal.toFixed(2)}</h3>
+            <p>Alcohol: ${mlAlcohol.toFixed(1)} ml | Esencia: ${mlEsencia.toFixed(1)} ml</p>
+            <hr>
+            <ul style="padding-left:20px; font-size:14px;">${desglose}</ul>
+        `;
+        document.getElementById('resultBox').style.display = 'block';
+        window.currentFormula = { vol, totalDrops, mlAlcohol: mlAlcohol.toFixed(1), costoTotal: costoTotal.toFixed(2), date: new Date().toLocaleDateString() };
     }
 
-    function toggleSec(id) {
-        ["panelAdmin", "panelGuardados", "panelCostos"].forEach(p => document.getElementById(p).style.display = "none");
-        document.getElementById(id).style.display = "block";
-        if(id === "panelAdmin") actualizarAdm(); if(id === "panelGuardados") actualizarRecs();
+    function saveToCloud() {
+        const name = document.getElementById('formName').value || "Sin nombre";
+        const desc = document.getElementById('formDesc').value;
+        const id = Date.now().toString();
+        database.ref('formulas/' + id).set({ ...window.currentFormula, name, desc, id });
+        alert("Fórmula guardada.");
+        document.getElementById('resultBox').style.display = 'none';
     }
 
-    function actualizarAdm() {
-        const tb = document.querySelector("#tabAdm tbody"); tb.innerHTML = "";
-        db.forEach((e, i) => {
-            tb.innerHTML += `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p} (${e.ml}ml)</td><td><button onclick="editA(${i})" style="width:auto; background:var(--info); padding:2px 8px;">✎</button> <button onclick="borrarA(${i})" style="width:auto; background:red; padding:2px 8px;">✕</button></td></tr>`;
-        });
-        localStorage.setItem('mirolab_db', JSON.stringify(db)); poblar();
+    function showPanel(id) {
+        document.getElementById('panelLibrary').style.display = 'none';
+        document.getElementById('panelInventory').style.display = 'none';
+        document.getElementById(id).style.display = 'block';
     }
-
-    function addAceite() {
-        const n = document.getElementById("editNom").value.trim(), nota = document.getElementById("editNota").value, f = document.getElementById("editFamilia").value, p = parseFloat(document.getElementById("editPrecio").value), ml = parseFloat(document.getElementById("editML").value), idx = parseInt(document.getElementById("editIdx").value);
-        if(!n || isNaN(p)) return alert("Completa los datos.");
-        if(idx === -1) db.push({n, nota, f, p, ml}); else { db[idx] = {n, nota, f, p, ml}; document.getElementById("editIdx").value = "-1"; }
-        document.getElementById("editNom").value = ""; document.getElementById("editPrecio").value = ""; document.getElementById("editML").value = "";
-        actualizarAdm();
-    }
-
-    function editA(i) {
-        document.getElementById("editIdx").value = i; document.getElementById("editNom").value = db[i].n; document.getElementById("editNota").value = db[i].nota; document.getElementById("editFamilia").value = db[i].f || "Cítrico"; document.getElementById("editPrecio").value = db[i].p; document.getElementById("editML").value = db[i].ml;
-    }
-
-    function borrarA(i) { if(confirm("¿Borrar?")) { db.splice(i, 1); actualizarAdm(); } }
-    function borrarR(i) { if(confirm("¿Borrar?")) { recs.splice(i, 1); localStorage.setItem('mirolab_recs', JSON.stringify(recs)); actualizarRecs(); } }
-
-    poblar();
-    window.onload = poblar;
 </script>
 </body>
 </html>
