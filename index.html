@@ -33,7 +33,7 @@
 <div class="container">
     <h1>Miro_lab</h1>
     <div class="subtitle">ATELIER PROFESIONAL</div>
-    <div id="syncMsg" class="sync-status">Cargando datos...</div>
+    <div id="syncMsg" class="sync-status">Sincronizando con Drive...</div>
     
     <div id="mainUI">
         <div class="card">
@@ -62,8 +62,8 @@
 
     <div id="panelAdmin">
         <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
-        <h3>Inventario (desde Drive)</h3>
-        <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Aceite</th><th>Nota</th><th>Costo</th></tr></thead><tbody></tbody></table></div>
+        <h3>Inventario Drive</h3>
+        <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Esencia</th><th>Nota</th><th>Costo</th></tr></thead><tbody></tbody></table></div>
     </div>
 
     <div id="panelGuardados">
@@ -81,22 +81,24 @@
 
     async function importarDrive() {
         try {
-            const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+            const res = await fetch(SHEET_URL + "&cb=" + Date.now());
             const data = await res.text();
-            // Limpieza de filas (quitamos comillas y espacios extra)
+            // Procesar CSV manejando posibles comas internas
             const filas = data.split("\n").map(f => f.split(",").map(c => c.replace(/"/g, '').trim()));
             
             let nuevosAceites = [];
-            // Empezamos desde la fila 1 para saltar cabecera
             for(let i = 1; i < filas.length; i++) {
                 const c = filas[i];
-                if(c.length >= 4 && c[0] !== "") {
+                if(c.length >= 5 && c[0] !== "") {
+                    // Mapeo según tu tabla: 0:ESENCIA, 3:NOTA, 4:PRECIO, 5:ML
+                    let precioLimpio = c[4].replace(/[^0-9.]/g, ''); // Quita símbolos de moneda
+                    let mlLimpio = c[5] ? c[5].replace(/[^0-9.]/g, '') : "10";
+
                     nuevosAceites.push({
-                        n: c[0],               // Nombre
-                        nota: c[1] || "Fondo", // Nota (Salida, Corazon, Fondo)
-                        f: c[2] || "General",  // Familia
-                        p: parseFloat(c[3]) || 0, // Precio
-                        ml: parseFloat(c[4]) || 10 // ml frasco
+                        n: c[0], 
+                        nota: c[3] || "Fondo", 
+                        p: parseFloat(precioLimpio) || 0,
+                        ml: parseFloat(mlLimpio) || 10
                     });
                 }
             }
@@ -105,7 +107,7 @@
             document.getElementById("syncMsg").innerText = "Sincronizado: " + db.length + " aceites";
             poblar();
         } catch (e) {
-            document.getElementById("syncMsg").innerText = "Error de conexión. Usando memoria local.";
+            document.getElementById("syncMsg").innerText = "Error. Usando datos locales.";
             db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
             poblar();
         }
@@ -130,7 +132,7 @@
             div.innerHTML = "";
             db.filter(e => {
                 const n = e.nota.toLowerCase();
-                if(tipo === "Cabeza") return n.includes("cabeza") || n.includes("salida");
+                if(tipo === "Cabeza") return n.includes("salida") || n.includes("cabeza");
                 if(tipo === "Corazon") return n.includes("corazon") || n.includes("corazón") || n.includes("medio");
                 return n.includes("fondo");
             }).forEach(e => {
@@ -151,12 +153,22 @@
         const gtsTotal = Math.round(v * (c/100) * 25);
         let costoE = 0;
         
-        const rC = selC.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.2)/selC.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
-        const rCo = selCo.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.35)/selCo.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
-        const rF = selF.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.45)/selF.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
+        const calc = (lista, peso) => {
+            const totalNotaGts = gtsTotal * peso;
+            return lista.map(n => {
+                const a = db.find(x => x.n === n);
+                let g = Math.round(totalNotaGts / lista.length);
+                costoE += (g/25) * (a.p / a.ml);
+                return g + "g " + n;
+            });
+        };
 
-        document.getElementById("recetaTxt").innerHTML = `<b>Fórmula para ${v}ml:</b><br>🌸 ${rC.join(' + ')}<br>🌿 ${rCo.join(' + ')}<br>🪵 ${rF.join(' + ')}`;
-        document.getElementById("costoDetalle").innerText = `Costo estimado esencias: $${costoE.toFixed(2)}`;
+        const rC = calc(selC, 0.2);
+        const rCo = calc(selCo, 0.35);
+        const rF = calc(selF, 0.45);
+
+        document.getElementById("recetaTxt").innerHTML = `<b>Fórmula (${v}ml):</b><br>🌸 ${rC.join(' + ')}<br>🌿 ${rCo.join(' + ')}<br>🪵 ${rF.join(' + ')}`;
+        document.getElementById("costoDetalle").innerText = `Costo Esencias: $${costoE.toFixed(2)}`;
         document.getElementById("resultado").style.display = "block";
     }
 
@@ -164,12 +176,12 @@
         const n = document.getElementById("nomFor").value || "Perfume";
         recs.unshift({n, fecha: new Date().toLocaleDateString()});
         localStorage.setItem('mirolab_recs', JSON.stringify(recs));
-        alert("Guardado en el libro.");
+        alert("Guardado.");
     }
 
     function actualizarAdm() {
         const tb = document.querySelector("#tabAdm tbody");
-        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p}</td></tr>`).join("");
+        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p} / ${e.ml}ml</td></tr>`).join("");
     }
 
     function actualizarRecs() {
