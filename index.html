@@ -5,146 +5,221 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Miro_lab</title>
     <style>
-        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f9f9f9; --save: #28a745; }
-        body { font-family: 'Georgia', serif; background-color: #f2f2f2; padding: 10px; margin: 0; }
-        .container { max-width: 600px; margin: auto; background: var(--bg); padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { font-family: sans-serif; letter-spacing: 2px; color: var(--dark); text-align: center; text-transform: uppercase; margin: 0; font-size: 1.5em; }
-        .subtitle { text-align: center; font-size: 0.7em; letter-spacing: 3px; color: var(--gold); margin-bottom: 20px; font-weight: bold; }
-        .card { padding: 15px; border-radius: 12px; background: var(--soft); border: 1px solid #eee; margin-bottom: 15px; }
-        .multi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 200px; overflow-y: auto; }
-        .nota-col h4 { margin: 0 0 8px 0; font-size: 0.7em; text-transform: uppercase; color: #888; text-align: center; }
-        .check-item { display: flex; align-items: center; font-size: 0.8em; margin-bottom: 8px; }
-        input, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background: var(--dark); color: white; font-weight: bold; cursor: pointer; border: none; }
-        #panelAdmin, #panelGuardados { display: none; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
-        .sync-btn { background: var(--gold); margin-bottom: 15px; }
+        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f4f4f4; --accent: #e5e5e5; }
+        body { font-family: 'Georgia', serif; background: #f0f0f0; padding: 10px; margin: 0; color: var(--dark); }
+        .container { max-width: 500px; margin: auto; background: var(--bg); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; letter-spacing: 3px; margin: 0; font-size: 1.6em; text-transform: uppercase; }
+        .subtitle { text-align: center; font-size: 0.7em; letter-spacing: 4px; color: var(--gold); font-weight: bold; margin-bottom: 15px; }
+        
+        /* Estética de Card y Formularios */
+        .card { background: white; padding: 15px; border-radius: 10px; border: 1px solid var(--accent); margin-bottom: 15px; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .input-group { flex: 1; }
+        label { font-size: 0.7em; text-transform: uppercase; color: #777; font-weight: bold; display: block; margin-bottom: 4px; }
+        input[type="number"], button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
+        
+        /* Selectores Encolumnados (Verticales) */
+        .nota-section { margin-bottom: 15px; }
+        .nota-header { background: var(--dark); color: white; padding: 6px 12px; border-radius: 5px; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .nota-lista { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; padding-left: 5px; }
+        .item-check { display: flex; align-items: center; padding: 8px; background: var(--soft); border-radius: 6px; font-size: 0.9em; cursor: pointer; transition: 0.2s; }
+        .item-check:active { background: var(--accent); }
+        .item-check input { margin-right: 12px; transform: scale(1.2); }
+
+        /* Botones y Resultados */
+        button { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:active { transform: scale(0.98); }
+        .btn-sync { background: var(--gold); color: white; margin-bottom: 15px; }
+        #res { display: none; margin-top: 15px; padding: 15px; background: #fffdf0; border-left: 4px solid var(--gold); font-size: 0.95em; line-height: 1.5; }
+
+        /* Paneles Secundarios */
+        #panelAdmin, #panelLibro { display: none; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 10px; }
+        th { background: #eee; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        .status-msg { font-size: 0.6em; text-align: center; margin-top: 5px; color: #888; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Miro_lab</h1>
-    <div class="subtitle">ATELIER PROFESIONAL</div>
-    <div id="syncMsg" style="font-size:0.7em; text-align:center; color: #999;">Cargando...</div>
+    <div class="subtitle">ATELIER</div>
+    <div id="status" class="status-msg">Cargando...</div>
 
     <div id="mainUI">
         <div class="card">
-            <div style="display: flex; gap: 8px; margin-bottom:10px;">
-                <div style="flex: 1;"><label><small>ml Total</small></label><input type="number" id="volTotal" value="30"></div>
-                <div style="flex: 1;"><label><small>Conc %</small></label><input type="number" id="tipoConc" value="18"></div>
+            <div class="input-row">
+                <div class="input-group"><label>Frasco (ml)</label><input type="number" id="v_ml" value="30"></div>
+                <div class="input-group"><label>Conc %</label><input type="number" id="v_c" value="18"></div>
             </div>
-            <div class="multi-grid">
-                <div class="nota-col"><h4>Salida</h4><div id="listaSalida"></div></div>
-                <div class="nota-col"><h4>Corazón</h4><div id="listaCorazon"></div></div>
-                <div class="nota-col"><h4>Fondo</h4><div id="listaFondo"></div></div>
+
+            <div class="nota-section">
+                <div class="nota-header">🌸 Notas de Salida</div>
+                <div id="box-salida" class="nota-lista"></div>
             </div>
-            <button onclick="generar()">CALCULAR</button>
-            <div id="resultado" style="display:none; margin-top:15px; border:1px solid var(--gold); padding:10px;">
-                <div id="recetaTxt" style="font-size:0.9em;"></div>
-                <div id="costoDetalle" style="font-weight:bold; color:green; margin-top:5px;"></div>
+
+            <div class="nota-section">
+                <div class="nota-header">🌿 Notas de Corazón</div>
+                <div id="box-corazon" class="nota-lista"></div>
             </div>
+
+            <div class="nota-section">
+                <div class="nota-header">🪵 Notas de Fondo</div>
+                <div id="box-fondo" class="nota-lista"></div>
+            </div>
+
+            <button onclick="calcular()" style="background: var(--gold);">CALCULAR FÓRMULA</button>
+            <div id="res"></div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button onclick="toggleSec('panelGuardados')" style="background:#666;">LIBRO</button>
-            <button onclick="toggleSec('panelAdmin')" style="background:#666;">ACEITES</button>
+        
+        <div style="display:flex; gap:10px;">
+            <button onclick="irA('panelAdmin')" style="background:#555">INVENTARIO</button>
+            <button onclick="irA('panelLibro')" style="background:#555">RECETAS</button>
         </div>
     </div>
 
     <div id="panelAdmin">
-        <button onclick="cerrarPaneles()" style="background:#eee; color:#333;">✕ VOLVER</button>
-        <button class="sync-btn" onclick="importarDrive()">🔄 SINCRONIZAR DRIVE</button>
-        <h3>Inventario Local</h3>
-        <table id="tabAdm"><thead><tr><th>Esencia</th><th>Precio</th><th>Acción</th></tr></thead><tbody></tbody></table>
+        <button onclick="irA('mainUI')" style="background:#ccc; color:black; margin-bottom:10px;">✕ VOLVER</button>
+        <button class="btn-sync" onclick="sincronizar()">🔄 ACTUALIZAR DESDE DRIVE</button>
+        <div class="card" style="padding:5px; overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr><th>Nombre</th><th>Nota</th><th>$</th><th>ml</th><th></th></tr>
+                </thead>
+                <tbody id="tabla-cuerpo"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="panelGuardados">
-        <button onclick="cerrarPaneles()" style="background:#eee; color:#333;">✕ VOLVER</button>
-        <h3>Fórmulas</h3>
-        <div id="listaF"></div>
+    <div id="panelLibro">
+        <button onclick="irA('mainUI')" style="background:#ccc; color:black">✕ VOLVER</button>
+        <h3>Recetas Guardadas</h3>
+        <div id="lista-recetas"></div>
     </div>
 </div>
 
 <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=tsv";
+    const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=tsv";
     
-    // Cargar de memoria local o empezar vacío
-    let db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
+    let db = JSON.parse(localStorage.getItem('m_db')) || [];
 
-    async function importarDrive() {
-        if(!confirm("Esto reemplazará tus aceites actuales con los de Google Drive. ¿Continuar?")) return;
+    async function sincronizar() {
+        document.getElementById('status').innerText = "Sincronizando con Google Drive...";
         try {
-            const res = await fetch(SHEET_URL + "&cb=" + Date.now());
-            const text = await res.text();
-            const filas = text.split("\n").map(f => f.split("\t").map(c => c.trim()));
-            
+            const r = await fetch(TSV_URL + "&nocache=" + Date.now());
+            const txt = await r.text();
+            const filas = txt.split("\n");
             let nuevos = [];
-            for(let i = 1; i < filas.length; i++) {
-                const c = filas[i];
-                if(c.length >= 3 && c[0] !== "") {
+
+            filas.forEach((f, i) => {
+                if(i === 0 || f.trim() === "") return; 
+                const c = f.split("\t");
+                if(c.length >= 3) {
+                    // Mapeo ESENCIA (0) - NOTA (1) - PRECIO (2) - ML (3)
+                    let precio = parseFloat(c[2]?.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+                    let ml = parseFloat(c[3]?.replace(/[^\d.,]/g, '').replace(',', '.')) || 10;
+                    
                     nuevos.push({
-                        n: c[0], 
-                        nota: c[1], // Salida, Corazón, Fondo
-                        p: parseFloat(c[2].replace(',', '.')) || 0,
-                        ml: parseFloat(c[3]) || 10
+                        n: c[0].trim(),
+                        nota: c[1] ? c[1].trim() : "Fondo",
+                        p: precio,
+                        m: ml
                     });
                 }
-            }
-            db = nuevos;
-            save();
-            renderAll();
-            alert("¡Sincronizado con éxito!");
-        } catch (e) { alert("Error al conectar con Drive"); }
-    }
-
-    function save() { localStorage.setItem('mirolab_db', JSON.stringify(db)); }
-
-    function renderAll() {
-        ["Salida", "Corazon", "Fondo"].forEach(t => {
-            const div = document.getElementById("lista" + t);
-            div.innerHTML = "";
-            db.filter(e => e.nota.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(t.toLowerCase().substring(0,5)))
-              .forEach(e => {
-                div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${t}" value="${e.n}"> ${e.n}</label>`;
             });
+
+            db = nuevos;
+            localStorage.setItem('m_db', JSON.stringify(db));
+            render();
+            document.getElementById('status').innerText = "✓ " + db.length + " aceites sincronizados";
+            alert("Sincronización completa");
+        } catch(e) {
+            document.getElementById('status').innerText = "Error de red";
+        }
+    }
+
+    function render() {
+        const boxes = {
+            "salida": document.getElementById('box-salida'),
+            "corazon": document.getElementById('box-corazon'),
+            "fondo": document.getElementById('box-fondo')
+        };
+        
+        Object.values(boxes).forEach(b => b.innerHTML = "");
+        
+        db.forEach(aceite => {
+            const n = aceite.nota.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            let target = "fondo";
+            if(n.includes("salida") || n.includes("cabeza")) target = "salida";
+            else if(n.includes("corazon") || n.includes("medio")) target = "corazon";
+            
+            if(boxes[target]) {
+                boxes[target].innerHTML += `
+                    <label class="item-check">
+                        <input type="checkbox" value="${aceite.n}" data-nota="${target}"> 
+                        ${aceite.n}
+                    </label>`;
+            }
         });
-        actualizarAdm();
+
+        // Inventario con todas las columnas
+        const tbody = document.getElementById("tabla-cuerpo");
+        tbody.innerHTML = db.map((a, i) => `
+            <tr>
+                <td><b>${a.n}</b></td>
+                <td><small>${a.nota}</small></td>
+                <td>$${a.p}</td>
+                <td>${a.m}</td>
+                <td><button onclick="borrar(${i})" style="padding:4px 8px; background:red; width:auto; font-size:10px;">✕</button></td>
+            </tr>
+        `).join("");
     }
 
-    function actualizarAdm() {
-        const tb = document.querySelector("#tabAdm tbody");
-        tb.innerHTML = db.map((e, i) => `<tr><td>${e.n}</td><td>$${e.p}</td><td><button onclick="borrar(${i})" style="background:red; padding:2px 5px;">✕</button></td></tr>`).join("");
+    function borrar(i) {
+        if(confirm("¿Borrar este aceite?")) {
+            db.splice(i, 1);
+            localStorage.setItem('m_db', JSON.stringify(db));
+            render();
+        }
     }
 
-    function borrar(i) { db.splice(i, 1); save(); renderAll(); }
+    function irA(id) {
+        document.getElementById('mainUI').style.display = id === 'mainUI' ? 'block' : 'none';
+        document.getElementById('panelAdmin').style.display = id === 'panelAdmin' ? 'block' : 'none';
+        document.getElementById('panelLibro').style.display = id === 'panelLibro' ? 'block' : 'none';
+    }
 
-    function generar() {
-        const v = parseFloat(document.getElementById("volTotal").value);
-        const c = parseFloat(document.getElementById("tipoConc").value);
-        const s = getSel("Salida"), co = getSel("Corazon"), f = getSel("Fondo");
-        if(!s.length || !co.length || !f.length) return alert("Faltan aceites");
+    function calcular() {
+        const vol = parseFloat(document.getElementById('v_ml').value);
+        const conc = parseFloat(document.getElementById('v_c').value);
+        const sels = Array.from(document.querySelectorAll('input:checked'));
+        
+        if(sels.length === 0) return alert("Selecciona al menos un aceite");
+        
+        const gtsT = Math.round(vol * (conc/100) * 25);
+        let costoTotal = 0;
+        let html = `<strong>Mezcla para ${vol}ml (${gtsT} gotas):</strong><br><hr>`;
 
-        const gtsT = Math.round(v * (c/100) * 25);
-        let cost = 0;
-        const calc = (L, P) => L.map(n => {
-            const a = db.find(x => x.n === n);
-            let g = Math.round((gtsT * P) / L.length);
-            cost += (g/25)*(a.p/a.ml);
-            return g + "g " + n;
+        ["salida", "corazon", "fondo"].forEach(t => {
+            const items = sels.filter(s => s.dataset.nota === t);
+            if(items.length > 0) {
+                const peso = t === "salida" ? 0.2 : t === "corazon" ? 0.35 : 0.45;
+                const gtsXAceite = Math.round((gtsT * peso) / items.length);
+                html += `<br><small>${t.toUpperCase()}</small><br>`;
+                items.forEach(it => {
+                    const a = db.find(x => x.n === it.value);
+                    costoTotal += (gtsXAceite/25) * (a.p / a.m);
+                    html += `• ${gtsXAceite} gotas de <b>${it.value}</b><br>`;
+                });
+            }
         });
 
-        document.getElementById("recetaTxt").innerHTML = `<b>${v}ml:</b><br>🌸 ${calc(s, 0.2).join(' + ')}<br>🌿 ${calc(co, 0.35).join(' + ')}<br>🪵 ${calc(f, 0.45).join(' + ')}`;
-        document.getElementById("costoDetalle").innerText = `Costo Esencias: $${cost.toFixed(2)}`;
-        document.getElementById("resultado").style.display = "block";
+        document.getElementById('res').innerHTML = html + `<hr><span style="color:green; font-weight:bold;">Costo estimado: $${costoTotal.toFixed(2)}</span>`;
+        document.getElementById('res').style.display = "block";
     }
 
-    function getSel(t) { return Array.from(document.querySelectorAll(`input[name="chk${t}"]:checked`)).map(e => e.value); }
-    function toggleSec(id) { document.getElementById("mainUI").style.display="none"; document.getElementById(id).style.display="block"; }
-    function cerrarPaneles() { document.getElementById("panelAdmin").style.display="none"; document.getElementById("panelGuardados").style.display="none"; document.getElementById("mainUI").style.display="block"; }
-
-    window.onload = renderAll;
+    window.onload = render;
 </script>
 </body>
 </html>
