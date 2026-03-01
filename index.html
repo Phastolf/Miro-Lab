@@ -3,213 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miro_lab | Atelier</title>
+    <title>Miro_lab - Atelier Profesional</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Miro_lab">
+    <meta name="apple-mobile-web-app-title" content="Miro_lab">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="msapplication-navbutton-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Miro_lab%22,%22short_name%22:%22Miro_lab%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22#ffffff%22,%22theme_color%22:%22#d4af37%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3022/3022567.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+
     <style>
-        :root { --oro: #c5a059; --oscuro: #1a1a1a; --gris: #f8f9fa; --borde: #e0e0e0; }
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f0f0f0; margin: 0; color: #333; }
-        .wrapper { max-width: 600px; margin: auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        header { background: var(--oscuro); color: white; padding: 30px 20px; text-align: center; border-bottom: 4px solid var(--oro); }
-        header h1 { margin: 0; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; font-size: 1.8em; }
-        header p { margin: 5px 0 0; font-size: 0.7em; letter-spacing: 3px; color: var(--oro); }
-
-        .content { padding: 20px; flex-grow: 1; }
-        .seccion { margin-bottom: 25px; }
-        .titulo-seccion { font-size: 0.75em; font-weight: bold; color: var(--oro); text-transform: uppercase; border-bottom: 1px solid var(--borde); padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 1px; }
-
-        /* Inputs */
-        .config-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .campo label { display: block; font-size: 0.7em; margin-bottom: 5px; color: #666; }
-        input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--borde); border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-
-        /* Lista de Esencias */
-        .lista-vertical { display: flex; flex-direction: column; gap: 8px; }
-        .check-card { display: flex; align-items: center; padding: 12px; background: var(--gris); border-radius: 6px; border: 1px solid var(--borde); cursor: pointer; transition: 0.2s; }
-        .check-card:active { background: #eee; }
-        .check-card input { margin-right: 15px; transform: scale(1.3); }
-        .check-card span { font-size: 0.9em; flex-grow: 1; }
-
-        /* Botones */
-        .btn-principal { background: var(--oscuro); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-weight: bold; letter-spacing: 1px; cursor: pointer; margin-top: 10px; }
-        .btn-principal:hover { background: #333; }
-        .btn-secundario { background: white; border: 1px solid var(--oscuro); color: var(--oscuro); padding: 10px; border-radius: 4px; font-size: 0.8em; cursor: pointer; flex: 1; }
-
-        /* Resultado */
-        #resultado { display: none; margin-top: 20px; padding: 20px; background: var(--gris); border-radius: 8px; border-left: 5px solid var(--oro); font-size: 0.9em; line-height: 1.6; }
-
-        /* Tabla Admin */
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        th { text-align: left; padding: 10px; background: #eee; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-
-        #panelAdmin { display: none; }
-        .hidden { display: none; }
+        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f9f9f9; --save: #28a745; --info: #2196F3; }
+        body { font-family: 'Georgia', serif; background-color: #f2f2f2; padding: 15px; margin: 0; }
+        .container { max-width: 900px; margin: auto; background: var(--bg); padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-height: 90vh; }
+        h1 { font-family: sans-serif; letter-spacing: 3px; color: var(--dark); text-align: center; text-transform: uppercase; margin: 0; }
+        .subtitle { text-align: center; font-size: 0.8em; letter-spacing: 4px; color: var(--gold); margin-bottom: 25px; font-weight: bold; }
+        .card { padding: 15px; border-radius: 12px; background: var(--soft); border: 1px solid #eee; margin-bottom: 15px; }
+        .multi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 220px; overflow-y: auto; }
+        .nota-col h4 { margin: 0 0 10px 0; font-size: 0.7em; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; padding-bottom: 5px; text-align: center;}
+        .check-item { display: flex; align-items: center; font-size: 0.8em; margin-bottom: 6px; cursor: pointer; padding: 4px; border-radius: 4px; }
+        .check-item input { width: auto; margin-right: 8px; margin-top: 0; }
+        select, input, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box; }
+        button { background: var(--dark); color: white; border: none; cursor: pointer; font-weight: bold; }
+        .formula-box { background: white; border: 2px solid var(--gold); padding: 15px; border-radius: 10px; margin-top: 15px; }
+        .desc-box { background: #fff9f0; border-left: 4px solid #e67e22; padding: 12px; margin: 12px 0; font-style: italic; color: #5d4037; font-size: 0.9em; }
+        .saved-item { background: white; border-left: 4px solid var(--gold); padding: 15px; margin-bottom: 12px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .details { font-size: 0.8em; color: #555; margin-top: 8px; line-height: 1.4; background: #fefefe; padding: 8px; border: 1px solid #f0f0f0; }
+        #panelAdmin, #panelGuardados, #panelCostos { display: none; margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin-top: 10px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .cost-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        @media (max-width: 600px) { .multi-grid { grid-template-columns: 1fr; } .nota-col { height: 150px; } }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <header>
-        <h1>Miro_lab</h1>
-        <p>ATELIER DE PERFUMERÍA</p>
-    </header>
-
-    <div class="content" id="mainUI">
-        <div class="config-row">
-            <div class="campo">
-                <label>TAMAÑO FRASCO (ml)</label>
-                <input type="number" id="v_ml" value="30">
-            </div>
-            <div class="campo">
-                <label>CONCENTRACIÓN (%)</label>
-                <input type="number" id="v_c" value="18">
-            </div>
+<div class="container">
+    <h1>Miro_lab</h1>
+    <div class="subtitle">ATELIER PROFESIONAL</div>
+    
+    <div class="card">
+        <div style="display: flex; gap: 8px;">
+            <div style="flex: 1;"><label><small>Frasco (ml)</small></label><input type="number" id="volTotal" value="30"></div>
+            <div style="flex: 1;"><label><small>Intensidad %</small></label><input type="number" id="tipoConc" value="18"></div>
+            <div style="flex: 1;"><label><small>Costo Frasco $</small></label><input type="number" id="costoFrascoBase" value="0"></div>
         </div>
-
-        <div class="seccion">
-            <div class="titulo-seccion">🌸 Notas de Salida</div>
-            <div id="lista-salida" class="lista-vertical"></div>
+        
+        <div class="multi-grid">
+            <div class="nota-col"><h4>🌸 Salida</h4><div id="listaCabeza"></div></div>
+            <div class="nota-col"><h4>🌿 Corazón</h4><div id="listaCorazon"></div></div>
+            <div class="nota-col"><h4>🪵 Fondo</h4><div id="listaFondo"></div></div>
         </div>
-
-        <div class="seccion">
-            <div class="titulo-seccion">🌿 Notas de Corazón</div>
-            <div id="lista-corazon" class="lista-vertical"></div>
-        </div>
-
-        <div class="seccion">
-            <div class="titulo-seccion">🪵 Notas de Fondo</div>
-            <div id="lista-fondo" class="lista-vertical"></div>
-        </div>
-
-        <button class="btn-principal" onclick="calcular()">CALCULAR PERFIL OLFATIVO</button>
-
-        <div id="resultado"></div>
-
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <button class="btn-secundario" onclick="toggleView('admin')">GESTIONAR ACEITES</button>
+        
+        <button onclick="generar()">CALCULAR MEZCLA Y PERFIL</button>
+        
+        <div id="resultado" style="display:none;" class="formula-box">
+            <div id="recetaTxt"></div>
+            <div id="perfilOlfativo" class="desc-box"></div>
+            <div id="costoDetalle" style="margin-top:10px; padding:10px; background:#f0f7ff; border:1px dashed #2196F3; font-size:0.9em;"></div>
+            <input type="text" id="nomFor" placeholder="Nombre de este perfume...">
+            <button onclick="guardarF()" style="background:var(--save); margin-top:10px;">💾 GUARDAR EN MI LIBRO</button>
         </div>
     </div>
 
-    <div class="content" id="panelAdmin">
-        <button class="btn-secundario" onclick="toggleView('main')" style="margin-bottom: 20px;">← VOLVER</button>
-        <div class="titulo-seccion">Importar desde Excel (TSV)</div>
-        <button class="btn-principal" style="background: var(--oro); color: white; margin-bottom: 20px;" onclick="sincronizar()">SINCRONIZAR CON DRIVE</button>
-        
-        <div class="titulo-seccion">Inventario Local</div>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr><th>Nombre</th><th>Nota</th><th>Costo</th><th>Acción</th></tr>
-                </thead>
-                <tbody id="tabla-cuerpo"></tbody>
-            </table>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button onclick="toggleSec('panelGuardados')" style="background:#eee; color:#333; flex:1; min-width:100px;">📖 LIBRO</button>
+        <button onclick="toggleSec('panelAdmin')" style="background:#eee; color:#333; flex:1; min-width:100px;">⚙️ ACEITES</button>
+        <button onclick="toggleSec('panelCostos')" style="background:#eee; color:#333; flex:1; min-width:100px;">💰 COSTOS</button>
+    </div>
+
+    <div id="panelCostos">
+        <h3>💰 Precios Base</h3>
+        <label>Alcohol (Precio por Litro $)</label>
+        <input type="number" id="precioAlcoholLitro" value="1000" onchange="guardarPreciosBase()">
+    </div>
+
+    <div id="panelGuardados"><h3>📖 Libro de Fórmulas</h3><div id="listaF"></div></div>
+
+    <div id="panelAdmin">
+        <h3>⚙️ Inventario</h3>
+        <div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; margin-bottom:15px; border-radius:8px;">
+            <input type="hidden" id="editIdx" value="-1">
+            <input type="text" id="editNom" placeholder="Nombre Aceite...">
+            <select id="editNota"><option value="Cabeza">Salida</option><option value="Corazon">Corazón</option><option value="Fondo">Fondo</option></select>
+            <select id="editFamilia">
+                <option value="Cítrico">🍋 Cítrico</option><option value="Floral">🌸 Floral</option><option value="Amaderado">🪵 Amaderado</option>
+                <option value="Especiado">🌶️ Especiado</option><option value="Herbal">🌿 Herbal</option><option value="Dulce/Oriental">🍯 Dulce/Oriental</option>
+            </select>
+            <div style="display:flex; gap:5px;">
+                <input type="number" id="editPrecio" placeholder="Precio $">
+                <input type="number" id="editML" placeholder="ml frasco">
+            </div>
+            <button onclick="addAceite()" style="margin-top:10px; background:var(--info);">GUARDAR ACEITE</button>
         </div>
+        <table id="tabAdm"><thead><tr><th>Aceite</th><th>Nota</th><th>Costo</th><th>Acción</th></tr></thead><tbody></tbody></table>
     </div>
 </div>
 
 <script>
-    const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=tsv";
+    const inicial = [
+        {n: "Limón", nota: "Cabeza", p: 500, ml: 10, f: "Cítrico"},
+        {n: "Rosa", nota: "Corazon", p: 2000, ml: 5, f: "Floral"},
+        {n: "Sándalo", nota: "Fondo", p: 2500, ml: 5, f: "Amaderado"}
+    ];
     
-    let db = JSON.parse(localStorage.getItem('m_db')) || [];
+    let db = JSON.parse(localStorage.getItem('mirolab_db')) || inicial;
+    let recs = JSON.parse(localStorage.getItem('mirolab_recs')) || [];
+    let preciosBase = JSON.parse(localStorage.getItem('mirolab_precios')) || { alcohol: 1000 };
+    let tempRec = null;
 
-    async function sincronizar() {
-        try {
-            const r = await fetch(TSV_URL + "&nocache=" + Date.now());
-            const txt = await r.text();
-            const filas = txt.split("\n");
-            let nuevos = [];
+    function guardarPreciosBase() {
+        preciosBase.alcohol = document.getElementById("precioAlcoholLitro").value;
+        localStorage.setItem('mirolab_precios', JSON.stringify(preciosBase));
+    }
 
-            filas.forEach((f, i) => {
-                if(i === 0 || f.trim() === "") return;
-                const c = f.split("\t");
-                if(c.length >= 3) {
-                    let precio = parseFloat(c[2]?.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-                    let ml = parseFloat(c[3]?.replace(/[^\d.,]/g, '').replace(',', '.')) || 10;
-                    nuevos.push({ n: c[0].trim(), nota: c[1]?.trim() || "Fondo", p: precio, m: ml });
-                }
+    function poblar() {
+        ["Cabeza", "Corazon", "Fondo"].forEach(tipo => {
+            const div = document.getElementById("lista" + tipo); div.innerHTML = "";
+            db.filter(e => e.nota === tipo).sort((a,b)=>a.n.localeCompare(b.n)).forEach(e => {
+                div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${tipo}" value="${e.n}"> ${e.n}</label>`;
             });
-
-            db = nuevos;
-            localStorage.setItem('m_db', JSON.stringify(db));
-            render();
-            alert("✓ " + db.length + " aceites sincronizados correctamente.");
-        } catch(e) { alert("Error al conectar con Drive. Revisa la conexión."); }
+        });
+        document.getElementById("precioAlcoholLitro").value = preciosBase.alcohol;
     }
 
-    function render() {
-        const boxes = {
-            "salida": document.getElementById('lista-salida'),
-            "corazon": document.getElementById('lista-corazon'),
-            "fondo": document.getElementById('lista-fondo')
+    function generar() {
+        const v = parseFloat(document.getElementById("volTotal").value);
+        const c = parseFloat(document.getElementById("tipoConc").value);
+        const cFrasco = parseFloat(document.getElementById("costoFrascoBase").value) || 0;
+        const selC = Array.from(document.querySelectorAll('input[name="chkCabeza"]:checked')).map(el => el.value);
+        const selCo = Array.from(document.querySelectorAll('input[name="chkCorazon"]:checked')).map(el => el.value);
+        const selF = Array.from(document.querySelectorAll('input[name="chkFondo"]:checked')).map(el => el.value);
+
+        if(!selC.length || !selCo.length || !selF.length) return alert("Selecciona aceites en las 3 columnas.");
+        
+        const gtsTotal = Math.round(v * (c/100) * 25);
+        const mlAlc = v - (gtsTotal / 25);
+        const costoAlc = mlAlc * (preciosBase.alcohol / 1000);
+        let costoEsenciasTotal = 0;
+        let familiasContador = {};
+
+        const procesar = (lista, gtsSector) => {
+            const gtsPorAceite = gtsSector / lista.length;
+            return lista.map(nombre => {
+                const info = db.find(a => a.n === nombre);
+                familiasContador[info.f] = (familiasContador[info.f] || 0) + 1;
+                costoEsenciasTotal += (gtsPorAceite / 25) * (info.p / info.ml);
+                return { nombre, gotas: Math.round(gtsPorAceite) };
+            });
         };
-        
-        Object.values(boxes).forEach(b => b.innerHTML = "");
-        
-        db.forEach(aceite => {
-            const n = aceite.nota.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            let target = "fondo";
-            if(n.includes("salida") || n.includes("cabeza")) target = "salida";
-            else if(n.includes("corazon") || n.includes("medio")) target = "corazon";
-            
-            boxes[target].innerHTML += `
-                <label class="check-card">
-                    <input type="checkbox" value="${aceite.n}" data-nota="${target}"> 
-                    <span>${aceite.n}</span>
-                </label>`;
+
+        const resC = procesar(selC, gtsTotal * 0.2);
+        const resCo = procesar(selCo, gtsTotal * 0.35);
+        const resF = procesar(selF, gtsTotal * 0.45);
+
+        const fMasUsada = Object.keys(familiasContador).reduce((a, b) => familiasContador[a] > familiasContador[b] ? a : b);
+        let desc = `Fragancia de carácter ${fMasUsada.toLowerCase()}, con una salida de ${selC.join(' y ')}, un corazón de ${selCo.join(' y ')} y un fondo persistente de ${selF.join(' y ')}.`;
+
+        const totalFinal = costoAlc + costoEsenciasTotal + cFrasco;
+        tempRec = { v, c, alc: mlAlc.toFixed(1), gtsTotal, resC, resCo, resF, totalFinal, desc };
+
+        document.getElementById("recetaTxt").innerHTML = `<h4>${v}ml - ${gtsTotal} gotas</h4><p>🟢 <b>Salida:</b> ${resC.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p><p>🟡 <b>Corazón:</b> ${resCo.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p><p>🔴 <b>Fondo:</b> ${resF.map(a => a.gotas+"gts "+a.nombre).join(" + ")}</p>`;
+        document.getElementById("perfilOlfativo").innerHTML = `<b>✨ Perfil:</b><br>"${desc}"`;
+        document.getElementById("costoDetalle").innerHTML = `<b>Costo: $${totalFinal.toFixed(2)}</b>`;
+        document.getElementById("resultado").style.display = "block";
+    }
+
+    function guardarF() {
+        const nom = document.getElementById("nomFor").value.trim() || "Perfume sin nombre";
+        recs.unshift({...tempRec, nombre: nom, fecha: new Date().toLocaleDateString()});
+        localStorage.setItem('mirolab_recs', JSON.stringify(recs));
+        actualizarRecs(); alert("¡Guardado!");
+    }
+
+    function actualizarRecs() {
+        const cont = document.getElementById("listaF"); cont.innerHTML = recs.length === 0 ? "<p><small>Libro vacío.</small></p>" : "";
+        recs.forEach((r, i) => {
+            cont.innerHTML += `<div class="saved-item"><div><b>${r.nombre}</b> <span class="cost-badge">$${r.totalFinal.toFixed(2)}</span><div class="details"><i>${r.desc}</i><br><br>${r.v}ml (${r.c}%) • ${r.fecha}</div><button onclick="borrarR(${i})" style="background:red; font-size:10px; width:auto; padding:5px; margin-top:5px;">✕ BORRAR</button></div></div>`;
         });
-
-        document.getElementById("tabla-cuerpo").innerHTML = db.map((a, i) => `
-            <tr>
-                <td>${a.n}</td>
-                <td><small>${a.nota}</small></td>
-                <td>$${a.p}</td>
-                <td><button onclick="borrar(${i})" style="color:red; background:none; border:none; cursor:pointer;">✕</button></td>
-            </tr>`).join("");
     }
 
-    function borrar(i) {
-        db.splice(i, 1);
-        localStorage.setItem('m_db', JSON.stringify(db));
-        render();
+    function toggleSec(id) {
+        ["panelAdmin", "panelGuardados", "panelCostos"].forEach(p => document.getElementById(p).style.display = "none");
+        document.getElementById(id).style.display = "block";
+        if(id === "panelAdmin") actualizarAdm(); if(id === "panelGuardados") actualizarRecs();
     }
 
-    function toggleView(view) {
-        document.getElementById('mainUI').style.display = view === 'main' ? 'block' : 'none';
-        document.getElementById('panelAdmin').style.display = view === 'admin' ? 'block' : 'none';
-    }
-
-    function calcular() {
-        const vol = parseFloat(document.getElementById('v_ml').value);
-        const conc = parseFloat(document.getElementById('v_c').value);
-        const sels = Array.from(document.querySelectorAll('input:checked'));
-        
-        if(sels.length === 0) return alert("Por favor, selecciona alguna esencia.");
-        
-        const gtsT = Math.round(vol * (conc/100) * 25);
-        let costoTotal = 0;
-        let html = `<strong>FÓRMULA PARA ${vol}ml</strong><br><small>${gtsT} gotas en total</small><br><hr style="border:0; border-top:1px solid #ddd; margin:10px 0;">`;
-
-        ["salida", "corazon", "fondo"].forEach(t => {
-            const items = sels.filter(s => s.dataset.nota === t);
-            if(items.length > 0) {
-                const peso = t === "salida" ? 0.2 : t === "corazon" ? 0.35 : 0.45;
-                const gtsXAceite = Math.round((gtsT * peso) / items.length);
-                html += `<strong style="font-size:0.8em; color:var(--oro);">${t.toUpperCase()}</strong><br>`;
-                items.forEach(it => {
-                    const a = db.find(x => x.n === it.value);
-                    costoTotal += (gtsXAceite/25) * (a.p / a.m);
-                    html += `• ${gtsXAceite} gotas de ${it.value}<br>`;
-                });
-                html += `<br>`;
-            }
+    function actualizarAdm() {
+        const tb = document.querySelector("#tabAdm tbody"); tb.innerHTML = "";
+        db.forEach((e, i) => {
+            tb.innerHTML += `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p} (${e.ml}ml)</td><td><button onclick="editA(${i})" style="width:auto; background:var(--info); padding:2px 8px;">✎</button> <button onclick="borrarA(${i})" style="width:auto; background:red; padding:2px 8px;">✕</button></td></tr>`;
         });
-
-        document.getElementById('resultado').innerHTML = html + `<hr style="border:0; border-top:1px solid #ddd; margin:10px 0;"><span style="color:#2e7d32; font-weight:bold; font-size:1.1em;">Costo de esencias: $${costoTotal.toFixed(2)}</span>`;
-        document.getElementById('resultado').style.display = "block";
-        window.scrollTo(0, document.body.scrollHeight);
+        localStorage.setItem('mirolab_db', JSON.stringify(db)); poblar();
     }
 
-    window.onload = render;
+    function addAceite() {
+        const n = document.getElementById("editNom").value.trim(), nota = document.getElementById("editNota").value, f = document.getElementById("editFamilia").value, p = parseFloat(document.getElementById("editPrecio").value), ml = parseFloat(document.getElementById("editML").value), idx = parseInt(document.getElementById("editIdx").value);
+        if(!n || isNaN(p)) return alert("Completa los datos.");
+        if(idx === -1) db.push({n, nota, f, p, ml}); else { db[idx] = {n, nota, f, p, ml}; document.getElementById("editIdx").value = "-1"; }
+        document.getElementById("editNom").value = ""; document.getElementById("editPrecio").value = ""; document.getElementById("editML").value = "";
+        actualizarAdm();
+    }
+
+    function editA(i) {
+        document.getElementById("editIdx").value = i; document.getElementById("editNom").value = db[i].n; document.getElementById("editNota").value = db[i].nota; document.getElementById("editFamilia").value = db[i].f || "Cítrico"; document.getElementById("editPrecio").value = db[i].p; document.getElementById("editML").value = db[i].ml;
+    }
+
+    function borrarA(i) { if(confirm("¿Borrar?")) { db.splice(i, 1); actualizarAdm(); } }
+    function borrarR(i) { if(confirm("¿Borrar?")) { recs.splice(i, 1); localStorage.setItem('mirolab_recs', JSON.stringify(recs)); actualizarRecs(); } }
+
+    poblar();
+    window.onload = poblar;
 </script>
 </body>
 </html>
