@@ -19,14 +19,13 @@
         @media (min-width: 480px) { .multi-grid { grid-template-columns: 1fr 1fr 1fr; } }
         .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 180px; overflow-y: auto; }
         .nota-col h4 { margin: 0 0 8px 0; font-size: 0.7em; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; text-align: center; }
-        .check-item { display: flex; align-items: center; font-size: 0.9em; margin-bottom: 8px; padding: 5px; border-radius: 5px; background: #fff; border: 1px solid #f0f0f0; }
+        .check-item { display: flex; align-items: center; font-size: 0.85em; margin-bottom: 8px; padding: 5px; border-radius: 5px; background: #fff; border: 1px solid #f0f0f0; }
         input, select, button { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
         button { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .desc-box { background: #fff9f0; border-left: 4px solid #e67e22; padding: 12px; margin: 12px 0; font-style: italic; font-size: 0.9em; }
-        #panelAdmin, #panelGuardados, #panelCostos { display: none; margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
-        .sync-status { font-size: 0.7em; text-align: center; color: #888; margin-top: 5px; }
+        #panelAdmin, #panelGuardados { display: none; margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.75em; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+        .sync-status { font-size: 0.65em; text-align: center; color: #999; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -34,26 +33,24 @@
 <div class="container">
     <h1>Miro_lab</h1>
     <div class="subtitle">ATELIER PROFESIONAL</div>
-    <div id="syncMsg" class="sync-status">Conectando con Google Drive...</div>
+    <div id="syncMsg" class="sync-status">Cargando datos...</div>
     
     <div id="mainUI">
         <div class="card">
             <div style="display: flex; gap: 8px;">
-                <div style="flex: 1;"><label><small>ml</small></label><input type="number" id="volTotal" value="30"></div>
-                <div style="flex: 1;"><label><small>Intensidad %</small></label><input type="number" id="tipoConc" value="18"></div>
-                <div style="flex: 1;"><label><small>Costo Frasco</small></label><input type="number" id="costoFrascoBase" value="0"></div>
+                <div style="flex: 1;"><label><small>ml frasco</small></label><input type="number" id="volTotal" value="30"></div>
+                <div style="flex: 1;"><label><small>Esencia %</small></label><input type="number" id="tipoConc" value="18"></div>
             </div>
             <div class="multi-grid">
                 <div class="nota-col"><h4>🌸 Salida</h4><div id="listaCabeza"></div></div>
                 <div class="nota-col"><h4>🌿 Corazón</h4><div id="listaCorazon"></div></div>
                 <div class="nota-col"><h4>🪵 Fondo</h4><div id="listaFondo"></div></div>
             </div>
-            <button onclick="generar()">CALCULAR MEZCLA</button>
-            <div id="resultado" style="display:none;" class="card" style="background:white; border:2px solid var(--gold); margin-top:15px;">
+            <button onclick="generar()">CALCULAR PERFIL</button>
+            <div id="resultado" style="display:none; margin-top:15px; border:2px solid var(--gold); padding:10px; border-radius:10px;">
                 <div id="recetaTxt"></div>
-                <div id="perfilOlfativo" class="desc-box"></div>
-                <div id="costoDetalle" style="font-weight:bold; color:var(--info);"></div>
-                <input type="text" id="nomFor" placeholder="Nombre de la fórmula...">
+                <div id="costoDetalle" style="font-weight:bold; margin-top:10px; color: #2e7d32;"></div>
+                <input type="text" id="nomFor" placeholder="Nombre del perfume...">
                 <button onclick="guardarF()" style="background:var(--save); margin-top:10px;">💾 GUARDAR</button>
             </div>
         </div>
@@ -64,15 +61,14 @@
     </div>
 
     <div id="panelAdmin">
-        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ CERRAR</button>
-        <h3>⚙️ Inventario</h3>
-        <button onclick="importarDrive()" style="background:var(--gold); margin-bottom:15px;">🔄 RE-SINCRONIZAR DRIVE</button>
-        <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Aceite</th><th>Nota</th><th>Costo</th><th>Acción</th></tr></thead><tbody></tbody></table></div>
+        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
+        <h3>Inventario (desde Drive)</h3>
+        <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Aceite</th><th>Nota</th><th>Costo</th></tr></thead><tbody></tbody></table></div>
     </div>
 
     <div id="panelGuardados">
-        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ CERRAR</button>
-        <h3>📖 Libro de Fórmulas</h3>
+        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
+        <h3>Mis Fórmulas</h3>
         <div id="listaF"></div>
     </div>
 </div>
@@ -80,38 +76,38 @@
 <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=csv";
     
-    let db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
+    let db = [];
     let recs = JSON.parse(localStorage.getItem('mirolab_recs')) || [];
 
     async function importarDrive() {
-        document.getElementById("syncMsg").innerText = "Sincronizando con Drive...";
         try {
-            const res = await fetch(SHEET_URL);
+            const res = await fetch(SHEET_URL + "&cache=" + Date.now());
             const data = await res.text();
-            const filas = data.split("\n").slice(1); // Ignorar cabecera
+            // Limpieza de filas (quitamos comillas y espacios extra)
+            const filas = data.split("\n").map(f => f.split(",").map(c => c.replace(/"/g, '').trim()));
             
             let nuevosAceites = [];
-            filas.forEach(fila => {
-                const cols = fila.split(",");
-                if(cols.length >= 4) {
+            // Empezamos desde la fila 1 para saltar cabecera
+            for(let i = 1; i < filas.length; i++) {
+                const c = filas[i];
+                if(c.length >= 4 && c[0] !== "") {
                     nuevosAceites.push({
-                        n: cols[0].trim(),
-                        nota: cols[1].trim(),
-                        f: cols[2].trim(),
-                        p: parseFloat(cols[3]),
-                        ml: parseFloat(cols[4]) || 10
+                        n: c[0],               // Nombre
+                        nota: c[1] || "Fondo", // Nota (Salida, Corazon, Fondo)
+                        f: c[2] || "General",  // Familia
+                        p: parseFloat(c[3]) || 0, // Precio
+                        ml: parseFloat(c[4]) || 10 // ml frasco
                     });
                 }
-            });
-            
-            if(nuevosAceites.length > 0) {
-                db = nuevosAceites;
-                localStorage.setItem('mirolab_db', JSON.stringify(db));
-                document.getElementById("syncMsg").innerText = "Sincronizado con éxito";
-                poblar();
             }
+            db = nuevosAceites;
+            localStorage.setItem('mirolab_db', JSON.stringify(db));
+            document.getElementById("syncMsg").innerText = "Sincronizado: " + db.length + " aceites";
+            poblar();
         } catch (e) {
-            document.getElementById("syncMsg").innerText = "Usando datos locales (Sin conexión)";
+            document.getElementById("syncMsg").innerText = "Error de conexión. Usando memoria local.";
+            db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
+            poblar();
         }
     }
 
@@ -132,7 +128,12 @@
         ["Cabeza", "Corazon", "Fondo"].forEach(tipo => {
             const div = document.getElementById("lista" + tipo);
             div.innerHTML = "";
-            db.filter(e => e.nota.toLowerCase().includes(tipo.toLowerCase().substring(0,3))).forEach(e => {
+            db.filter(e => {
+                const n = e.nota.toLowerCase();
+                if(tipo === "Cabeza") return n.includes("cabeza") || n.includes("salida");
+                if(tipo === "Corazon") return n.includes("corazon") || n.includes("corazón") || n.includes("medio");
+                return n.includes("fondo");
+            }).forEach(e => {
                 div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${tipo}" value="${e.n}"> ${e.n}</label>`;
             });
         });
@@ -141,7 +142,6 @@
     function generar() {
         const v = parseFloat(document.getElementById("volTotal").value);
         const c = parseFloat(document.getElementById("tipoConc").value);
-        const cFrasco = parseFloat(document.getElementById("costoFrascoBase").value) || 0;
         const selC = Array.from(document.querySelectorAll('input[name="chkCabeza"]:checked')).map(el => el.value);
         const selCo = Array.from(document.querySelectorAll('input[name="chkCorazon"]:checked')).map(el => el.value);
         const selF = Array.from(document.querySelectorAll('input[name="chkFondo"]:checked')).map(el => el.value);
@@ -151,49 +151,32 @@
         const gtsTotal = Math.round(v * (c/100) * 25);
         let costoE = 0;
         
-        const calc = (lista, peso) => {
-            const gts = (gtsTotal * peso) / lista.length;
-            return lista.map(n => {
-                const a = db.find(x => x.n === n);
-                costoE += (gts/25) * (a.p / a.ml);
-                return {n, g: Math.round(gts)};
-            });
-        };
+        const rC = selC.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.2)/selC.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
+        const rCo = selCo.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.35)/selCo.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
+        const rF = selF.map(n => { const a = db.find(x => x.n === n); let g = Math.round((gtsTotal*0.45)/selF.length); costoE += (g/25)*(a.p/a.ml); return g+"g "+n; });
 
-        const rC = calc(selC, 0.2), rCo = calc(selCo, 0.35), rF = calc(selF, 0.45);
-        const total = costoE + cFrasco + ((v * 0.8) * 1); // Estimación alcohol
-
-        document.getElementById("recetaTxt").innerHTML = `<b>${v}ml (${gtsTotal} gotas)</b><br>🌸 ${rC.map(x=>x.g+'g '+x.n).join('+')}<br>🌿 ${rCo.map(x=>x.g+'g '+x.n).join('+')}<br>🪵 ${rF.map(x=>x.g+'g '+x.n).join('+')}`;
-        document.getElementById("costoDetalle").innerText = `Costo Total: $${total.toFixed(2)}`;
+        document.getElementById("recetaTxt").innerHTML = `<b>Fórmula para ${v}ml:</b><br>🌸 ${rC.join(' + ')}<br>🌿 ${rCo.join(' + ')}<br>🪵 ${rF.join(' + ')}`;
+        document.getElementById("costoDetalle").innerText = `Costo estimado esencias: $${costoE.toFixed(2)}`;
         document.getElementById("resultado").style.display = "block";
-        tempRec = {n:"", v, total, fecha: new Date().toLocaleDateString()};
     }
 
     function guardarF() {
-        tempRec.n = document.getElementById("nomFor").value || "Perfume";
-        recs.unshift(tempRec);
+        const n = document.getElementById("nomFor").value || "Perfume";
+        recs.unshift({n, fecha: new Date().toLocaleDateString()});
         localStorage.setItem('mirolab_recs', JSON.stringify(recs));
-        alert("¡Guardado!");
+        alert("Guardado en el libro.");
     }
 
     function actualizarAdm() {
         const tb = document.querySelector("#tabAdm tbody");
-        tb.innerHTML = "";
-        db.forEach((e, i) => {
-            tb.innerHTML += `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p}</td><td><button onclick="db.splice(${i},1);actualizarAdm()" style="background:red;padding:5px;">✕</button></td></tr>`;
-        });
+        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p}</td></tr>`).join("");
     }
 
     function actualizarRecs() {
-        const div = document.getElementById("listaF");
-        div.innerHTML = recs.map(r => `<div class="card"><b>${r.n}</b> - $${r.total.toFixed(2)}<br><small>${r.fecha}</small></div>`).join("");
+        document.getElementById("listaF").innerHTML = recs.map(r => `<div class="card"><b>${r.n}</b><br><small>${r.fecha}</small></div>`).join("");
     }
 
-    // Al cargar, importar de Drive
-    window.onload = () => { importarDrive(); poblar(); };
-
-    // Service Worker para instalación
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    window.onload = importarDrive;
 </script>
 </body>
 </html>
