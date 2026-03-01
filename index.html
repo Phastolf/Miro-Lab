@@ -33,7 +33,7 @@
 <div class="container">
     <h1>Miro_lab</h1>
     <div class="subtitle">ATELIER PROFESIONAL</div>
-    <div id="syncMsg" class="sync-status">Sincronizando con Drive...</div>
+    <div id="syncMsg" class="sync-status">Sincronizando con Drive (TSV)...</div>
     
     <div id="mainUI">
         <div class="card">
@@ -62,7 +62,7 @@
 
     <div id="panelAdmin">
         <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
-        <h3>Inventario Drive</h3>
+        <h3>Inventario (TSV)</h3>
         <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Esencia</th><th>Nota</th><th>Costo</th></tr></thead><tbody></tbody></table></div>
     </div>
 
@@ -74,7 +74,7 @@
 </div>
 
 <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=csv";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=tsv";
     
     let db = [];
     let recs = JSON.parse(localStorage.getItem('mirolab_recs')) || [];
@@ -82,32 +82,35 @@
     async function importarDrive() {
         try {
             const res = await fetch(SHEET_URL + "&cb=" + Date.now());
-            const data = await res.text();
-            // Procesar CSV manejando posibles comas internas
-            const filas = data.split("\n").map(f => f.split(",").map(c => c.replace(/"/g, '').trim()));
+            const text = await res.text();
+            
+            // Separador de tabulaciones para mayor precisión
+            const filas = text.split("\n").map(f => f.split("\t").map(c => c.trim().replace(/"/g, '')));
             
             let nuevosAceites = [];
+            // Empezamos en i=1 para saltar la cabecera
             for(let i = 1; i < filas.length; i++) {
                 const c = filas[i];
+                // Estructura: 0:ESENCIA, 1:INTENSA, 2:CARACT, 3:NOTA DE:, 4:PRECIO, 5:FRASCO ml
                 if(c.length >= 5 && c[0] !== "") {
-                    // Mapeo según tu tabla: 0:ESENCIA, 3:NOTA, 4:PRECIO, 5:ML
-                    let precioLimpio = c[4].replace(/[^0-9.]/g, ''); // Quita símbolos de moneda
-                    let mlLimpio = c[5] ? c[5].replace(/[^0-9.]/g, '') : "10";
+                    // Limpiamos los números de cualquier símbolo no numérico
+                    let p = parseFloat(c[4].replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+                    let m = parseFloat(c[5] ? c[5].replace(/[^\d.,]/g, '').replace(',', '.') : "10") || 10;
 
                     nuevosAceites.push({
                         n: c[0], 
                         nota: c[3] || "Fondo", 
-                        p: parseFloat(precioLimpio) || 0,
-                        ml: parseFloat(mlLimpio) || 10
+                        p: p,
+                        ml: m
                     });
                 }
             }
             db = nuevosAceites;
             localStorage.setItem('mirolab_db', JSON.stringify(db));
-            document.getElementById("syncMsg").innerText = "Sincronizado: " + db.length + " aceites";
+            document.getElementById("syncMsg").innerText = "✓ " + db.length + " aceites cargados desde Drive";
             poblar();
         } catch (e) {
-            document.getElementById("syncMsg").innerText = "Error. Usando datos locales.";
+            document.getElementById("syncMsg").innerText = "Error. Usando datos guardados.";
             db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
             poblar();
         }
@@ -154,19 +157,15 @@
         let costoE = 0;
         
         const calc = (lista, peso) => {
-            const totalNotaGts = gtsTotal * peso;
             return lista.map(n => {
                 const a = db.find(x => x.n === n);
-                let g = Math.round(totalNotaGts / lista.length);
+                let g = Math.round((gtsTotal * peso) / lista.length);
                 costoE += (g/25) * (a.p / a.ml);
                 return g + "g " + n;
             });
         };
 
-        const rC = calc(selC, 0.2);
-        const rCo = calc(selCo, 0.35);
-        const rF = calc(selF, 0.45);
-
+        const rC = calc(selC, 0.2), rCo = calc(selCo, 0.35), rF = calc(selF, 0.45);
         document.getElementById("recetaTxt").innerHTML = `<b>Fórmula (${v}ml):</b><br>🌸 ${rC.join(' + ')}<br>🌿 ${rCo.join(' + ')}<br>🪵 ${rF.join(' + ')}`;
         document.getElementById("costoDetalle").innerText = `Costo Esencias: $${costoE.toFixed(2)}`;
         document.getElementById("resultado").style.display = "block";
@@ -176,12 +175,12 @@
         const n = document.getElementById("nomFor").value || "Perfume";
         recs.unshift({n, fecha: new Date().toLocaleDateString()});
         localStorage.setItem('mirolab_recs', JSON.stringify(recs));
-        alert("Guardado.");
+        alert("¡Fórmula guardada!");
     }
 
     function actualizarAdm() {
         const tb = document.querySelector("#tabAdm tbody");
-        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p} / ${e.ml}ml</td></tr>`).join("");
+        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p.toFixed(2)}</td></tr>`).join("");
     }
 
     function actualizarRecs() {
