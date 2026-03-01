@@ -4,28 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Miro_lab</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#d4af37">
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Miro_lab%22,%22short_name%22:%22Miro_lab%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22#ffffff%22,%22theme_color%22:%22#d4af37%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3022/3022567.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
-
     <style>
-        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f9f9f9; --save: #28a745; --info: #2196F3; }
+        :root { --gold: #d4af37; --dark: #333; --bg: #fff; --soft: #f9f9f9; --save: #28a745; }
         body { font-family: 'Georgia', serif; background-color: #f2f2f2; padding: 10px; margin: 0; }
         .container { max-width: 600px; margin: auto; background: var(--bg); padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         h1 { font-family: sans-serif; letter-spacing: 2px; color: var(--dark); text-align: center; text-transform: uppercase; margin: 0; font-size: 1.5em; }
         .subtitle { text-align: center; font-size: 0.7em; letter-spacing: 3px; color: var(--gold); margin-bottom: 20px; font-weight: bold; }
         .card { padding: 15px; border-radius: 12px; background: var(--soft); border: 1px solid #eee; margin-bottom: 15px; }
-        .multi-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 15px 0; }
-        @media (min-width: 480px) { .multi-grid { grid-template-columns: 1fr 1fr 1fr; } }
-        .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 180px; overflow-y: auto; }
-        .nota-col h4 { margin: 0 0 8px 0; font-size: 0.7em; text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; text-align: center; }
-        .check-item { display: flex; align-items: center; font-size: 0.85em; margin-bottom: 8px; padding: 5px; border-radius: 5px; background: #fff; border: 1px solid #f0f0f0; }
-        input, select, button { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
-        button { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
-        #panelAdmin, #panelGuardados { display: none; margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.75em; }
+        .multi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .nota-col { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px; height: 200px; overflow-y: auto; }
+        .nota-col h4 { margin: 0 0 8px 0; font-size: 0.7em; text-transform: uppercase; color: #888; text-align: center; }
+        .check-item { display: flex; align-items: center; font-size: 0.8em; margin-bottom: 8px; }
+        input, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background: var(--dark); color: white; font-weight: bold; cursor: pointer; border: none; }
+        #panelAdmin, #panelGuardados { display: none; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
         th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
-        .sync-status { font-size: 0.65em; text-align: center; color: #999; margin-bottom: 10px; }
+        .sync-btn { background: var(--gold); margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -33,42 +28,41 @@
 <div class="container">
     <h1>Miro_lab</h1>
     <div class="subtitle">ATELIER PROFESIONAL</div>
-    <div id="syncMsg" class="sync-status">Sincronizando con Drive (TSV)...</div>
-    
+    <div id="syncMsg" style="font-size:0.7em; text-align:center; color: #999;">Cargando...</div>
+
     <div id="mainUI">
         <div class="card">
-            <div style="display: flex; gap: 8px;">
-                <div style="flex: 1;"><label><small>ml frasco</small></label><input type="number" id="volTotal" value="30"></div>
-                <div style="flex: 1;"><label><small>Esencia %</small></label><input type="number" id="tipoConc" value="18"></div>
+            <div style="display: flex; gap: 8px; margin-bottom:10px;">
+                <div style="flex: 1;"><label><small>ml Total</small></label><input type="number" id="volTotal" value="30"></div>
+                <div style="flex: 1;"><label><small>Conc %</small></label><input type="number" id="tipoConc" value="18"></div>
             </div>
             <div class="multi-grid">
-                <div class="nota-col"><h4>🌸 Salida</h4><div id="listaCabeza"></div></div>
-                <div class="nota-col"><h4>🌿 Corazón</h4><div id="listaCorazon"></div></div>
-                <div class="nota-col"><h4>🪵 Fondo</h4><div id="listaFondo"></div></div>
+                <div class="nota-col"><h4>Salida</h4><div id="listaSalida"></div></div>
+                <div class="nota-col"><h4>Corazón</h4><div id="listaCorazon"></div></div>
+                <div class="nota-col"><h4>Fondo</h4><div id="listaFondo"></div></div>
             </div>
-            <button onclick="generar()">CALCULAR PERFIL</button>
-            <div id="resultado" style="display:none; margin-top:15px; border:2px solid var(--gold); padding:10px; border-radius:10px;">
-                <div id="recetaTxt"></div>
-                <div id="costoDetalle" style="font-weight:bold; margin-top:10px; color: #2e7d32;"></div>
-                <input type="text" id="nomFor" placeholder="Nombre del perfume...">
-                <button onclick="guardarF()" style="background:var(--save); margin-top:10px;">💾 GUARDAR</button>
+            <button onclick="generar()">CALCULAR</button>
+            <div id="resultado" style="display:none; margin-top:15px; border:1px solid var(--gold); padding:10px;">
+                <div id="recetaTxt" style="font-size:0.9em;"></div>
+                <div id="costoDetalle" style="font-weight:bold; color:green; margin-top:5px;"></div>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <button onclick="toggleSec('panelGuardados')" style="background:#607D8B;">📖 LIBRO</button>
-            <button onclick="toggleSec('panelAdmin')" style="background:#607D8B;">⚙️ ACEITES</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button onclick="toggleSec('panelGuardados')" style="background:#666;">LIBRO</button>
+            <button onclick="toggleSec('panelAdmin')" style="background:#666;">ACEITES</button>
         </div>
     </div>
 
     <div id="panelAdmin">
-        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
-        <h3>Inventario (TSV)</h3>
-        <div style="overflow-x: auto;"><table id="tabAdm"><thead><tr><th>Esencia</th><th>Nota</th><th>Costo</th></tr></thead><tbody></tbody></table></div>
+        <button onclick="cerrarPaneles()" style="background:#eee; color:#333;">✕ VOLVER</button>
+        <button class="sync-btn" onclick="importarDrive()">🔄 SINCRONIZAR DRIVE</button>
+        <h3>Inventario Local</h3>
+        <table id="tabAdm"><thead><tr><th>Esencia</th><th>Precio</th><th>Acción</th></tr></thead><tbody></tbody></table>
     </div>
 
     <div id="panelGuardados">
-        <button onclick="cerrarPaneles()" style="background:#ccc; color:#333;">✕ VOLVER</button>
-        <h3>Mis Fórmulas</h3>
+        <button onclick="cerrarPaneles()" style="background:#eee; color:#333;">✕ VOLVER</button>
+        <h3>Fórmulas</h3>
         <div id="listaF"></div>
     </div>
 </div>
@@ -76,118 +70,81 @@
 <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJDdfkTCmRXM8zF6q-p-pUd2iWqnkuhDQ6QK4LcYXn6vbcm_HMCiCo05wWGWZPiw1UlfYToMJ6Vb_X/pub?output=tsv";
     
-    let db = [];
-    let recs = JSON.parse(localStorage.getItem('mirolab_recs')) || [];
+    // Cargar de memoria local o empezar vacío
+    let db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
 
     async function importarDrive() {
+        if(!confirm("Esto reemplazará tus aceites actuales con los de Google Drive. ¿Continuar?")) return;
         try {
             const res = await fetch(SHEET_URL + "&cb=" + Date.now());
             const text = await res.text();
+            const filas = text.split("\n").map(f => f.split("\t").map(c => c.trim()));
             
-            // Separador de tabulaciones para mayor precisión
-            const filas = text.split("\n").map(f => f.split("\t").map(c => c.trim().replace(/"/g, '')));
-            
-            let nuevosAceites = [];
-            // Empezamos en i=1 para saltar la cabecera
+            let nuevos = [];
             for(let i = 1; i < filas.length; i++) {
                 const c = filas[i];
-                // Estructura: 0:ESENCIA, 1:INTENSA, 2:CARACT, 3:NOTA DE:, 4:PRECIO, 5:FRASCO ml
-                if(c.length >= 5 && c[0] !== "") {
-                    // Limpiamos los números de cualquier símbolo no numérico
-                    let p = parseFloat(c[4].replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-                    let m = parseFloat(c[5] ? c[5].replace(/[^\d.,]/g, '').replace(',', '.') : "10") || 10;
-
-                    nuevosAceites.push({
+                if(c.length >= 3 && c[0] !== "") {
+                    nuevos.push({
                         n: c[0], 
-                        nota: c[3] || "Fondo", 
-                        p: p,
-                        ml: m
+                        nota: c[1], // Salida, Corazón, Fondo
+                        p: parseFloat(c[2].replace(',', '.')) || 0,
+                        ml: parseFloat(c[3]) || 10
                     });
                 }
             }
-            db = nuevosAceites;
-            localStorage.setItem('mirolab_db', JSON.stringify(db));
-            document.getElementById("syncMsg").innerText = "✓ " + db.length + " aceites cargados desde Drive";
-            poblar();
-        } catch (e) {
-            document.getElementById("syncMsg").innerText = "Error. Usando datos guardados.";
-            db = JSON.parse(localStorage.getItem('mirolab_db')) || [];
-            poblar();
-        }
+            db = nuevos;
+            save();
+            renderAll();
+            alert("¡Sincronizado con éxito!");
+        } catch (e) { alert("Error al conectar con Drive"); }
     }
 
-    function cerrarPaneles() {
-        document.getElementById("panelAdmin").style.display = "none";
-        document.getElementById("panelGuardados").style.display = "none";
-        document.getElementById("mainUI").style.display = "block";
-    }
+    function save() { localStorage.setItem('mirolab_db', JSON.stringify(db)); }
 
-    function toggleSec(id) {
-        document.getElementById("mainUI").style.display = "none";
-        document.getElementById(id).style.display = "block";
-        if(id === 'panelAdmin') actualizarAdm();
-        if(id === 'panelGuardados') actualizarRecs();
-    }
-
-    function poblar() {
-        ["Cabeza", "Corazon", "Fondo"].forEach(tipo => {
-            const div = document.getElementById("lista" + tipo);
+    function renderAll() {
+        ["Salida", "Corazon", "Fondo"].forEach(t => {
+            const div = document.getElementById("lista" + t);
             div.innerHTML = "";
-            db.filter(e => {
-                const n = e.nota.toLowerCase();
-                if(tipo === "Cabeza") return n.includes("salida") || n.includes("cabeza");
-                if(tipo === "Corazon") return n.includes("corazon") || n.includes("corazón") || n.includes("medio");
-                return n.includes("fondo");
-            }).forEach(e => {
-                div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${tipo}" value="${e.n}"> ${e.n}</label>`;
+            db.filter(e => e.nota.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(t.toLowerCase().substring(0,5)))
+              .forEach(e => {
+                div.innerHTML += `<label class="check-item"><input type="checkbox" name="chk${t}" value="${e.n}"> ${e.n}</label>`;
             });
         });
-    }
-
-    function generar() {
-        const v = parseFloat(document.getElementById("volTotal").value);
-        const c = parseFloat(document.getElementById("tipoConc").value);
-        const selC = Array.from(document.querySelectorAll('input[name="chkCabeza"]:checked')).map(el => el.value);
-        const selCo = Array.from(document.querySelectorAll('input[name="chkCorazon"]:checked')).map(el => el.value);
-        const selF = Array.from(document.querySelectorAll('input[name="chkFondo"]:checked')).map(el => el.value);
-
-        if(!selC.length || !selCo.length || !selF.length) return alert("Selecciona aceites en las 3 notas.");
-
-        const gtsTotal = Math.round(v * (c/100) * 25);
-        let costoE = 0;
-        
-        const calc = (lista, peso) => {
-            return lista.map(n => {
-                const a = db.find(x => x.n === n);
-                let g = Math.round((gtsTotal * peso) / lista.length);
-                costoE += (g/25) * (a.p / a.ml);
-                return g + "g " + n;
-            });
-        };
-
-        const rC = calc(selC, 0.2), rCo = calc(selCo, 0.35), rF = calc(selF, 0.45);
-        document.getElementById("recetaTxt").innerHTML = `<b>Fórmula (${v}ml):</b><br>🌸 ${rC.join(' + ')}<br>🌿 ${rCo.join(' + ')}<br>🪵 ${rF.join(' + ')}`;
-        document.getElementById("costoDetalle").innerText = `Costo Esencias: $${costoE.toFixed(2)}`;
-        document.getElementById("resultado").style.display = "block";
-    }
-
-    function guardarF() {
-        const n = document.getElementById("nomFor").value || "Perfume";
-        recs.unshift({n, fecha: new Date().toLocaleDateString()});
-        localStorage.setItem('mirolab_recs', JSON.stringify(recs));
-        alert("¡Fórmula guardada!");
+        actualizarAdm();
     }
 
     function actualizarAdm() {
         const tb = document.querySelector("#tabAdm tbody");
-        tb.innerHTML = db.map(e => `<tr><td>${e.n}</td><td>${e.nota}</td><td>$${e.p.toFixed(2)}</td></tr>`).join("");
+        tb.innerHTML = db.map((e, i) => `<tr><td>${e.n}</td><td>$${e.p}</td><td><button onclick="borrar(${i})" style="background:red; padding:2px 5px;">✕</button></td></tr>`).join("");
     }
 
-    function actualizarRecs() {
-        document.getElementById("listaF").innerHTML = recs.map(r => `<div class="card"><b>${r.n}</b><br><small>${r.fecha}</small></div>`).join("");
+    function borrar(i) { db.splice(i, 1); save(); renderAll(); }
+
+    function generar() {
+        const v = parseFloat(document.getElementById("volTotal").value);
+        const c = parseFloat(document.getElementById("tipoConc").value);
+        const s = getSel("Salida"), co = getSel("Corazon"), f = getSel("Fondo");
+        if(!s.length || !co.length || !f.length) return alert("Faltan aceites");
+
+        const gtsT = Math.round(v * (c/100) * 25);
+        let cost = 0;
+        const calc = (L, P) => L.map(n => {
+            const a = db.find(x => x.n === n);
+            let g = Math.round((gtsT * P) / L.length);
+            cost += (g/25)*(a.p/a.ml);
+            return g + "g " + n;
+        });
+
+        document.getElementById("recetaTxt").innerHTML = `<b>${v}ml:</b><br>🌸 ${calc(s, 0.2).join(' + ')}<br>🌿 ${calc(co, 0.35).join(' + ')}<br>🪵 ${calc(f, 0.45).join(' + ')}`;
+        document.getElementById("costoDetalle").innerText = `Costo Esencias: $${cost.toFixed(2)}`;
+        document.getElementById("resultado").style.display = "block";
     }
 
-    window.onload = importarDrive;
+    function getSel(t) { return Array.from(document.querySelectorAll(`input[name="chk${t}"]:checked`)).map(e => e.value); }
+    function toggleSec(id) { document.getElementById("mainUI").style.display="none"; document.getElementById(id).style.display="block"; }
+    function cerrarPaneles() { document.getElementById("panelAdmin").style.display="none"; document.getElementById("panelGuardados").style.display="none"; document.getElementById("mainUI").style.display="block"; }
+
+    window.onload = renderAll;
 </script>
 </body>
 </html>
